@@ -1,0 +1,102 @@
+.principal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to top, #0a0a0a, #1b1b1b, #2a2a2a);
+    color: #FFFFFF;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+/* Container do formulário */
+.loginContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #121212;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Título */
+.loginContainer h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+/* Campos de entrada */
+.loginContainer input {
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+    background-color: #121212;
+    border: 1px solid white;
+    border-radius: 4px;
+    outline: none;
+    font-size: 1rem;
+    color: #FFFFFF;
+}
+
+/* Botão de login */
+.loginContainer button {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: black;
+    background-color: #1DB954; /* Verde Spotify */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+}
+
+.loginContainer button:hover {
+    background-color: #1aa34a; /* Efeito hover */
+}
+
+.loginContainer .iconLogo {
+    width: 20%;
+}
+
+/* Feedback */
+.feedbackMessage {
+    margin-top: 20px; /* Ajuste o valor conforme necessário */
+}
+
+
+/* Overlay do Loader */
+.loaderOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Coloca o overlay acima de todos os elementos */
+}
+
+/* Estilo do loader (spinner) */
+.loader {
+    border: 4px solid #f3f3f3; /* Cor de fundo do loader */
+    border-top: 4px solid #1DB954; /* Cor do loader */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
