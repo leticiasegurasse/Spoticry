@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '../services/authService'; // Importa a função de logout
 // import banner from '../assets/img/banner-spoticry.jpg';
-import './Home.css';
+import styles from './Home.module.css'; // Importa o CSS Module
 
 
 function Home() {
@@ -15,7 +15,7 @@ function Home() {
 
     return (
         <div>
-            <div className='banner'>
+            <div>
                 <h1>Bem-vindo ao Spoticry!</h1>
             </div>
             <nav>
