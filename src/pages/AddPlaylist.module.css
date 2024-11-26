@@ -1,0 +1,93 @@
+.container {
+    padding: 20px;
+    background-color: #121212;
+    color: #fff;
+    min-height: 100vh;
+  }
+
+.containerPrincipal {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    background: linear-gradient(to top, #151515, #1b1b1b, #262626);
+    width: 100%;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+}
+  
+  .formContainer {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #1db954;
+    margin-bottom: 20px;
+  }
+  
+  .feedback {
+    color: #1db954;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .input,
+  .textarea,
+  .searchBar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2c2c2c;
+    color: #fff;
+    font-size: 16px;
+  }
+  
+  .input:focus,
+  .textarea:focus,
+  .searchBar:focus {
+    outline: 2px solid #1db954;
+  }
+  
+  .songsList {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    background-color: #2c2c2c;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .songItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+  
+  .songItem input {
+    margin-right: 10px;
+  }
+  
+  .submitButton {
+    width: 100%;
+    padding: 15px;
+    background-color: #1db954;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    color: #121212;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submitButton:hover {
+    background-color: #1aa34a;
+  }
+  

@@ -5,12 +5,15 @@ import MusicCard from '../components/MusicCard';
 import styles from './MusicList.module.css';
 import { logoutUser } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function MusicList() {
     const [musicas, setMusicas] = useState([]);
     const [feedback, setFeedback] = useState(null);
+    const [searchQuery, setSearchQuery] = useState(""); // Query de busca
+    const [currentPage, setCurrentPage] = useState(0); // Página atual
+    const itemsPerPage = 10; // Número de músicas por página
     const navigate = useNavigate();
-
 
     useEffect(() => {
         async function loadMusicas() {
@@ -25,21 +28,42 @@ function MusicList() {
         }
         loadMusicas();
     }, []);
-    
+
     const handleLogout = () => {
         logoutUser();
         navigate('/login');
     };
 
-    // const handleDelete = async (id) => {
-    //     try {
-    //         await deleteMusic(id);
-    //         setMusicas(musicas.filter((musica) => musica.id !== id));
-    //         setFeedback({ message: 'Música excluída com sucesso!', type: 'success' });
-    //     } catch {
-    //         setFeedback({ message: 'Erro ao excluir música', type: 'error' });
-    //     }
-    // };
+    // Função para lidar com a busca
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value.toLowerCase());
+        setCurrentPage(0); // Reinicia na primeira página ao realizar uma busca
+    };
+
+    // Filtra as músicas com base no nome e no artista
+    const filteredMusicas = musicas.filter((musica) => {
+        const nameMatch = musica.title?.toLowerCase().includes(searchQuery);
+        const artistMatch = musica.artist?.toLowerCase().includes(searchQuery);
+        return nameMatch || artistMatch;
+    });
+
+
+    // Calcula o índice inicial e final para a página atual
+    const startIndex = currentPage * itemsPerPage;
+    const paginatedMusicas = filteredMusicas.slice(startIndex, startIndex + itemsPerPage);
+
+    // Funções de navegação para a paginação
+    const handleNextPage = () => {
+        if ((currentPage + 1) * itemsPerPage < filteredMusicas.length) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
     return (
         <div className={styles.container}>
@@ -61,17 +85,57 @@ function MusicList() {
                         </svg>
                     </button>
                 </nav>
-                <h2>Lista de Músicas</h2>
-                {feedback && <Feedback message={feedback.message} type={feedback.type} />}
-                {musicas.length === 0 ? (
-                    <p>Nenhuma música encontrada.</p>
-                ) : (
-                    <ul>
-                        {musicas.map((musica) => (
-                            <MusicCard key={musica.id} musica={musica} />
-                        ))}
-                    </ul>
-                )}
+                {/* Barra de Busca */}
+                <input
+                    type="text"
+                    placeholder="Pesquisar por nome ou artista..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    className={styles.searchBar}
+                />
+                <span>
+                    <div className="flex justify-content-between align-items-center">
+                        <h3>Todas as Músicas</h3>
+                        <Link to="/minhas-musicas">
+                            <button className={styles.paginationButton}>
+                                Ver Minhas Musicas
+                            </button>
+                        </Link>
+                    </div>
+                    {feedback && <Feedback message={feedback.message} type={feedback.type} />}
+                    {filteredMusicas.length === 0 ? (
+                        <p>Nenhuma música encontrada.</p>
+                    ) : (
+                        <div>
+                            <div className={styles.musicGrid}>
+                                {paginatedMusicas.map((musica) => (
+                                    <MusicCard key={musica.id} musica={musica} />
+                                ))}
+                            </div>
+                            {/* Controles de Paginação */}
+                            <div className={styles.paginationContainer}>
+                                <button
+                                    onClick={handlePreviousPage}
+                                    disabled={currentPage === 0}
+                                    className={styles.paginationButton}
+                                >
+                                    Anterior
+                                </button>
+                                <span className={styles.paginationInfo}>
+                                    Página {currentPage + 1} de{" "}
+                                    {Math.ceil(filteredMusicas.length / itemsPerPage)}
+                                </span>
+                                <button
+                                    onClick={handleNextPage}
+                                    disabled={(currentPage + 1) * itemsPerPage >= filteredMusicas.length}
+                                    className={styles.paginationButton}
+                                >
+                                    Próxima
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </span>
             </div>
         </div>
     );

@@ -22,6 +22,10 @@
     align-items: center;
 }
 
+.wrap {
+    flex-wrap: wrap;
+}
+
 .gap10{
     gap: 10px;
 }

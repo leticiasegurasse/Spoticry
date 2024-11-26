@@ -5,6 +5,8 @@ import PlaylistTable from "../components/PlaylistTable";
 import styles from "./MinhasPlaylists.module.css";
 import { logoutUser } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
+
 
 // Função para recuperar o userId do token
 const getUserIdFromToken = (token) => {
@@ -126,7 +128,16 @@ function MinhasPlaylists() {
 
         {/* Lista de Playlists */}
         <div>
-          <h3>Minhas Playlists</h3>
+        <div className="flex justify-content-between align-items-center">
+            <h3>Todas as Playlists</h3>
+            {/* Botão Ver Minhas Playlists */}
+            <Link to="/add-playlist">
+              <button className={styles.paginationButton}>
+                Adicionar Playlist
+              </button>
+            </Link>
+          </div>
+
           <table className={styles.playlistTable}>
             <thead>
               <tr>
