@@ -1,63 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import api from '../utils/api';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
-const PlaylistDetailsContainer = styled.div`
-  padding: 20px;
-  max-width: 800px;
-  margin: auto;
-`;
-
-const SongList = styled.ul`
-  list-style: none;
-  padding: 0;
-`;
-
-const SongItem = styled.li`
-  padding: 8px 0;
-  border-bottom: 1px solid #ddd;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const PlaylistDetails = () => {
-  const { id } = useParams();
-  const [playlist, setPlaylist] = useState(null);
+function PlaylistDetails() {
+  const { id } = useParams(); // Obtém o ID da playlist da URL
+  const [playlist, setPlaylist] = useState(null); // Inicializa como null
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.get(`/playlist/${id}`)
-      .then(response => setPlaylist(response.data))
-      .catch(error => console.error('Erro ao carregar detalhes da playlist:', error));
+    const fetchPlaylist = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `https://mqjnto3qw2.execute-api.us-east-1.amazonaws.com/default/playlist/${id}`,
+          {
+            headers: { Authorization: token },
+          }
+        );
+        console.log("Resposta da API:", response.data); // Verifica a estrutura da resposta
+        setPlaylist(response.data.playlist); // Define o estado com o objeto `playlist`
+      } catch (err) {
+        setError("Erro ao carregar os detalhes da playlist.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlaylist();
   }, [id]);
 
-  const removeSongFromPlaylist = (songId) => {
-    api.delete(`/playlist/${id}/song/${songId}`)
-      .then(() => {
-        setPlaylist({
-          ...playlist,
-          songs: playlist.songs.filter(song => song.id !== songId),
-        });
-      })
-      .catch(error => console.error('Erro ao remover música da playlist:', error));
-  };
+  if (loading) return <p>Carregando...</p>;
+  if (error) return <p>{error}</p>;
 
-  if (!playlist) return <p>Loading...</p>;
+  // Acessa os dados da playlist
+  const playlistName = playlist?._name || "Playlist sem título";
+  const playlistDescription = playlist?._description || "Sem descrição";
 
   return (
-    <PlaylistDetailsContainer>
-      <h2>{playlist.name}</h2>
-      <p>{playlist.description}</p>
-      <SongList>
-        {playlist.songs.map(song => (
-          <SongItem key={song.id}>
-            <span>{song.title} - {song.artist}</span>
-            <button onClick={() => removeSongFromPlaylist(song.id)}>Remover</button>
-          </SongItem>
+    <div>
+      <h1>{playlistName}</h1>
+      <p>{playlistDescription}</p>
+
+      {/* Renderiza músicas apenas se existirem */}
+      <h2>Músicas</h2>
+      <ul>
+        {(playlist?._songs || []).map((song) => (
+          <li key={song}>
+            <p>{song}</p> {/* Ajuste conforme a estrutura do item em `_songs` */}
+          </li>
         ))}
-      </SongList>
-    </PlaylistDetailsContainer>
+      </ul>
+    </div>
   );
-};
+}
 
 export default PlaylistDetails;

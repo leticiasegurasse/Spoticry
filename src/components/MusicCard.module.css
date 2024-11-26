@@ -1,0 +1,90 @@
+.musicCard {
+    position: relative; /* Necessário para posicionar o botão dentro do card */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 220px;
+    padding: 10px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    color: #ffffff;
+    overflow: hidden; /* Garante que o botão não ultrapasse o card */
+}
+
+.musicCard:hover {
+    cursor: pointer;
+    background-color: rgb(37, 37, 37);
+}
+
+/* Botão de play */
+.playButton {
+    position: absolute;
+    bottom: 10px; /* Distância do canto inferior */
+    right: 10px; /* Distância do canto direito */
+    background-color: #1DB954; /* Fundo semi-transparente */
+    color: #000; /* Cor do ícone ou texto */
+    border: none;
+    border-radius: 50%; /* Forma circular */
+    width: 32px;
+    height: 32px;
+    display: none; /* Inicialmente escondido */
+    justify-content: center;
+    align-items: center;
+    padding-left: 3px;
+    font-size: 15px; /* Tamanho do ícone */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.playButton:hover {
+    background-color: #10ee5e; /* Cor ao passar o mouse */
+    box-shadow: 1px 1px 10pxrgba(0, 0, 0, 0.807)k;
+}
+
+/* Mostra o botão ao passar o mouse */
+.musicCard:hover .playButton {
+    display: flex; /* Torna o botão visível */
+}
+
+
+.thumbnail {
+    width: 100%;
+    height: 200px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-block: 8px;
+}
+
+.artist,
+.album{
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+    color: #626262;
+    font-weight: 200;
+}
+
+.button {
+    padding: 8px 12px;
+    background-color: #1DB954;
+    border: none;
+    border-radius: 4px;
+    color: #121212;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #1aa34a;
+}

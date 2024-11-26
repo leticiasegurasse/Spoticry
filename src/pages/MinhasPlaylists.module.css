@@ -1,0 +1,139 @@
+.container {
+    min-height: 100vh;
+    background-color: black;
+    padding: 10px;
+}
+
+.containerPrincipal {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: linear-gradient(to top, #151515, #1b1b1b, #262626);
+    width: 100%;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+}
+
+.searchBar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #555; /* Cor neutra para a borda inicial */
+    background-color: transparent; /* Fundo escuro */
+    color: #ffffff; /* Texto branco */
+    outline: none; /* Remove o contorno padrão */
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Transição suave */
+}
+
+.searchBar::placeholder {
+    color: #777; /* Placeholder com cor mais clara */
+}
+
+.searchBar:focus {
+    border-color: #169400; /* Borda verde neon */
+    box-shadow: 0 0 3px #169400; /* Adiciona um brilho ao redor */
+}
+
+
+.playlistTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: transparent; /* Fundo transparente */
+    color: #ffffff; /* Texto branco */
+    text-align: left;
+    font-size: 14px; /* Tamanho menor para o texto */
+}
+
+.playlistTable th {
+    padding: 15px 10px;
+    font-weight: 400;
+    text-transform: uppercase; /* Letras maiúsculas */
+    font-size: 12px; /* Tamanho menor do texto */
+    color: #b3b3b3; /* Cinza claro para o cabeçalho */
+    border-bottom: 1px solid #444; /* Linha separadora */
+    text-align: left;
+}
+
+.playlistTable td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #282828; /* Linha separadora */
+    vertical-align: middle; /* Centraliza verticalmente */
+    color: #ffffff; /* Texto branco */
+}
+
+.playlistTable tr:hover {
+    background-color: #282828; /* Cor de destaque ao passar o mouse */
+}
+
+.playlistTable .playlistImage {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px; /* Arredondamento suave */
+}
+
+.playlistTable .playlistLink {
+    color: #ffffff; /* Texto branco */
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.playlistTable .playlistLink:hover {
+    text-decoration: underline;
+}
+
+.playlistTable .playlistAlbum {
+    color: #b3b3b3; /* Cinza para o álbum */
+}
+
+.playlistTable .playlistAdded {
+    color: #b3b3b3; /* Cinza claro para a data */
+}
+
+.playlistTable .playlistDuration {
+    text-align: right;
+    font-family: 'Roboto Mono', monospace; /* Fonte monoespaçada para duração */
+    color: #b3b3b3;
+}
+
+
+.paginationContainer {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* Espaço entre os elementos */
+    font-size: 14px;
+    color: #b3b3b3; /* Cinza claro */
+}
+
+.paginationButton {
+    padding: 10px 15px;
+    background-color: #121212; /* Fundo escuro */
+    border: 1px solid #333; /* Borda discreta */
+    border-radius: 5px;
+    color: #ffffff; /* Texto branco */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Transições suaves */
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: #1DB954; /* Destaque verde (inspirado no Spotify) */
+    color: #000000; /* Texto preto para contraste */
+    border-color: #1DB954;
+}
+
+.paginationButton:disabled {
+    background-color: #333; /* Fundo para botões desabilitados */
+    color: #777; /* Texto mais claro */
+    cursor: not-allowed; /* Cursor indicando que está desabilitado */
+}
+
+.paginationInfo {
+    font-size: 14px;
+    color: #ffffff; /* Texto branco */
+}

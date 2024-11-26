@@ -1,0 +1,70 @@
+.playlistCardContainer {
+    position: relative;
+    border-radius: 4px;
+    background-color: #303030;
+    width: 23%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.playlistCardContainer:hover {
+    background-color: #474747;
+
+}
+
+.playlistImage {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 4px 0 0 4px;
+    box-shadow: 1px 0px 10px rgba(0, 0, 0, 0.4); /* Sombra à direita */
+
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.playlistInfo {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-decoration: none;
+    color: white;
+}
+
+.playlistInfo h3 {
+    font-size: 0.9rem;
+    
+}
+
+.playButton {
+    position: absolute;
+    bottom: 10px; /* Distância do canto inferior */
+    right: 10px; /* Distância do canto direito */
+    background-color: #1DB954; /* Fundo semi-transparente */
+    color: #000; /* Cor do ícone ou texto */
+    border: none;
+    border-radius: 50%; /* Forma circular */
+    width: 32px;
+    height: 32px;
+    display: none; /* Inicialmente escondido */
+    justify-content: center;
+    align-items: center;
+    padding-left: 3px;
+    font-size: 15px; /* Tamanho do ícone */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.playButton:hover {
+    background-color: #10ee5e; /* Cor ao passar o mouse */
+    box-shadow: 1px 1px 10pxrgba(0, 0, 0, 0.807)k;
+}
+
+/* Mostra o botão ao passar o mouse */
+.playlistCardContainer:hover .playButton {
+    display: flex; /* Torna o botão visível */
+}
+

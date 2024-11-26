@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loginUser, getToken } from '../services/authService';
+import { loginUser, getToken, isTokenValid } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 import Feedback from '../components/Feedback';
 import styles from './Login.module.css'; // Importa o CSS Module
@@ -14,7 +14,11 @@ function Login() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (getToken()) {
+        const token = getToken();
+        if (!token || !isTokenValid(token)) {
+            localStorage.removeItem('token'); // Remove token inválido
+            navigate('/login'); // Redireciona para login
+        }else {
             navigate('/home');
         }
     }, [navigate]);
@@ -37,7 +41,7 @@ function Login() {
     };
 
     return (
-        <div className={styles.principal}> {/* Altere o uso de classes para usar CSS Modules */}
+        <div className={styles.container}> {/* Altere o uso de classes para usar CSS Modules */}
             <div className={styles.loginContainer}>
                 {isLoading && (
                     <div className={styles.loaderOverlay}>

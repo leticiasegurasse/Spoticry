@@ -1,0 +1,50 @@
+.playlistTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #303030;
+    color: #ffffff;
+    text-align: left;
+}
+
+.playlistTable th,
+.playlistTable td {
+    padding: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.playlistTable th {
+    background-color: #424242;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #383838;
+}
+
+.playlistImage {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.playlistLink {
+    color: #1DB954;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.playlistLink:hover {
+    text-decoration: underline;
+}
+
+
+.playlistRow {
+    cursor: pointer; /* Adiciona o cursor de ponteiro */
+    transition: background-color 0.2s ease-in-out; /* Transição suave para o hover */
+}
+
+.playlistRow:hover {
+    background-color: #282828; /* Destaque ao passar o mouse */
+}

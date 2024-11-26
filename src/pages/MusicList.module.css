@@ -1,32 +1,20 @@
-/* Estilo geral */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
+.container {
+    min-height: 100vh;
+    background-color: black;
+    padding: 10px;
 }
 
-.flex{
+.containerPrincipal {
     display: flex;
+    flex-direction: column;
+    gap: 50px;
+    background: linear-gradient(to top, #151515, #1b1b1b, #262626);
+    width: 100%;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
 }
 
-.justify-content-center{
-    justify-content: center;
-}
-
-.justify-content-between{
-    justify-content: space-between;
-}
-
-.align-items-center {
-    align-items: center;
-}
-
-.gap10{
-    gap: 10px;
-}
-
-/******MENU*****/
 .navBarContainer{
     display: flex;
     justify-content: space-between;
