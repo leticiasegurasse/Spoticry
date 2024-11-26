@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Corrige a importação do jwtDecode
+import { useLocation, useNavigate } from "react-router-dom";
 import MusicCard from "../components/MusicCard";
+import { fetchAllMyMusic, deleteMusic } from "../services/musicService"; // Importa funções do musicService
 import styles from "./MinhasMusicas.module.css";
-import { logoutUser } from "../services/authService";
-import { useNavigate } from "react-router-dom";
+import NavBar from "../components/NavBar";
+import { Link } from "react-router-dom";
 
 // Função para recuperar o userId do token
 const getUserIdFromToken = (token) => {
   try {
     const decodedToken = jwtDecode(token);
-    return decodedToken.id; // Substitua 'id' pelo nome correto no seu payload JWT
+    return decodedToken.id; // Substitua por "id" ou o campo correto do seu payload JWT
   } catch (error) {
     console.error("Erro ao decodificar o token:", error);
     return null;
@@ -19,53 +20,78 @@ const getUserIdFromToken = (token) => {
 
 function MinhasMusicas() {
   const [musicas, setMusicas] = useState([]);
-  const [filteredMusicas, setFilteredMusicas] = useState([]); // Músicas filtradas para busca
+  const [filteredMusicas, setFilteredMusicas] = useState([]);
   const [feedback, setFeedback] = useState(null);
-  const [searchQuery, setSearchQuery] = useState(""); // Query de busca
-  const [currentPage, setCurrentPage] = useState(0); // Página atual
-  const itemsPerPage = 10; // Máximo de 10 músicas por página
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
+  const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userId = getUserIdFromToken(token); // Usa a função para obter o userId
-
-    if (!userId) {
-      setFeedback("Erro: Usuário não autenticado.");
-      return;
+    if (location.state?.feedback) {
+      setFeedback(location.state.feedback);
+      setTimeout(() => {
+        setFeedback(null);
+        navigate(".", { replace: true });
+      }, 5000);
     }
 
-    axios
-      .get(
-        `https://seu-endpoint-api.com/musicas/user/${userId}`, // Substitua pelo endpoint correto
-        {
-          headers: { Authorization: token },
-        }
-      )
-      .then((res) => {
-        setMusicas(res.data.musicas || []); // Garante que músicas seja um array
-        setFilteredMusicas(res.data.musicas || []); // Inicializa as músicas filtradas
-      })
-      .catch((err) => {
-        console.error("Erro ao buscar músicas do usuário:", err);
-        setFeedback("Erro ao carregar suas músicas.");
-      });
-  }, []);
+    const fetchMusicas = async () => {
+      const token = localStorage.getItem("token");
+      const userId = getUserIdFromToken(token);
 
-  // Função para lidar com a busca
+      if (!userId) {
+        setFeedback("Erro: Usuário não autenticado.");
+        return;
+      }
+
+      try {
+        const allSongs = await fetchAllMyMusic(); // Chama a função do service
+        console.log(allSongs);
+        const userSongs = allSongs.filter((song) => song.userId === userId); // Filtra músicas do usuário
+        setMusicas(userSongs);
+        setFilteredMusicas(userSongs);
+      } catch (error) {
+        console.error("Erro ao buscar músicas do usuário:", error);
+        setFeedback("Erro ao carregar suas músicas.");
+      }
+    };
+
+    fetchMusicas();
+  }, [location.state, navigate]);
+
+  const handleDeleteMusic = async (id) => {
+    const confirmDelete = window.confirm(
+      "Você tem certeza que deseja apagar esta música?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await deleteMusic(id); // Usa a função do service
+      setFeedback("Música apagada com sucesso!");
+      setMusicas((prevMusicas) => prevMusicas.filter((musica) => musica.id !== id));
+      setFilteredMusicas((prevFiltered) =>
+        prevFiltered.filter((musica) => musica.id !== id)
+      );
+    } catch (error) {
+      console.error("Erro ao apagar música:", error);
+      setFeedback("Erro ao apagar música.");
+    }
+  };
+
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
     const filtered = musicas.filter(
       (musica) =>
-        musica.name?.toLowerCase().includes(query) ||
+        musica.title?.toLowerCase().includes(query) ||
         musica.artist?.toLowerCase().includes(query)
     );
     setFilteredMusicas(filtered);
-    setCurrentPage(0); // Reinicia na primeira página
+    setCurrentPage(0);
   };
 
-  // Funções de navegação para a paginação
   const handleNextPage = () => {
     if ((currentPage + 1) * itemsPerPage < filteredMusicas.length) {
       setCurrentPage(currentPage + 1);
@@ -78,12 +104,6 @@ function MinhasMusicas() {
     }
   };
 
-  const handleLogout = () => {
-    logoutUser();
-    navigate("/login");
-  };
-
-  // Músicas exibidas na página atual
   const startIndex = currentPage * itemsPerPage;
   const paginatedMusicas = filteredMusicas.slice(
     startIndex,
@@ -93,25 +113,7 @@ function MinhasMusicas() {
   return (
     <div className={styles.container}>
       <div className={styles.containerPrincipal}>
-        <nav className="navBarContainer">
-          <ul className="menuContainer">
-            <li>
-              <a href="/home">Tudo</a>
-            </li>
-            <li>
-              <a href="/musicas" className="menuCheck">
-                Músicas
-              </a>
-            </li>
-            <li>
-              <a href="/playlists">Playlists</a>
-            </li>
-          </ul>
-          <button onClick={handleLogout} className="logoutButton">
-            Logout
-          </button>
-        </nav>
-        {/* Barra de busca */}
+        <NavBar />
         <input
           type="text"
           placeholder="Pesquisar por nome ou artista..."
@@ -119,21 +121,34 @@ function MinhasMusicas() {
           onChange={handleSearch}
           className={styles.searchBar}
         />
-
-        {/* Feedback */}
-        {feedback && <p>{feedback}</p>}
-
-        {/* Lista de Músicas */}
+        {feedback && <div className={styles.feedback}>{feedback}</div>}
         <div>
-          <h3>Minhas Músicas</h3>
-          <div className={styles.musicGrid}>
-            {paginatedMusicas.map((musica, index) => (
-              <MusicCard key={musica.id} musica={musica} />
-            ))}
+          <div className="flex justify-content-between align-items-center">
+            <h3>Minhas Músicas</h3>
+            <Link to="/add-musica">
+              <button className={styles.paginationButton}>
+                Adicionar Música
+              </button>
+            </Link>
           </div>
+          {filteredMusicas.length === 0 ? (
+            <p className={styles.noMusic}>Nenhuma música encontrada.</p>
+          ) : (
+            <div className={styles.musicGrid}>
+              {paginatedMusicas.map((musica) => (
+                <div key={musica.id}>
+                  <MusicCard musica={musica} />
+                  <button
+                    className={styles.deleteButton}
+                    onClick={() => handleDeleteMusic(musica.id)}
+                  >
+                    Apagar
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-
-        {/* Controles de Paginação */}
         <div className={styles.paginationContainer}>
           <button
             onClick={handlePreviousPage}

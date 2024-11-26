@@ -15,71 +15,7 @@
     color: white;
 }
 
-.navBarContainer{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
-.logoutButton {
-    display: flex;
-    align-items: center; /* Alinha texto e ícone no centro verticalmente */
-    gap: 8px; /* Espaço entre o texto e o ícone */
-    padding: 10px 20px;
-    background-color: transparent; /* Vermelho */
-    color: #ffffff; /* Texto branco */
-    border: none;
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.logoutButton:hover {
-    background-color: #d62828; /* Vermelho mais escuro */
-    transform: scale(1.05); /* Leve aumento no tamanho */
-}
-
-.logoutButton:active {
-    background-color: #b71c1c; /* Vermelho ainda mais escuro */
-    transform: scale(0.95); /* Reduz ligeiramente o tamanho */
-}
-
-.logoutIcon {
-    fill: #ffffff; /* Torna o ícone branco */
-    width: 16px; /* Ajusta o tamanho do ícone */
-    height: 16px;
-    transition: fill 0.3s ease; /* Adiciona suavidade ao hover */
-}
-
-.logoutButton:hover .logoutIcon {
-    fill: #ffffff; /* Mantém o ícone branco ao passar o mouse */
-}
-
-
-.menuContainer {
-    display: flex;
-}
-
-.menuContainer li {
-    list-style: none;
-    padding: 8px 10px;
-}
-
-.menuContainer li a{
-    text-decoration: none;
-    color: white;
-    font-size: 0.8em;
-    padding: 8px 13px;
-    background-color: #4a4a4a;
-    border-radius: 50px;
-}
-
-.menuCheck,  .menuContainer li a:hover{
-    background-color: white !important;
-    color: #1b1b1b !important;
-}
 
 /* .playMusica{
     display: flex;

@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { logoutUser } from '../services/authService';
 import styles from './Home.module.css';
 import MusicCard from '../components/MusicCard';
 import Feedback from '../components/Feedback';
@@ -8,14 +6,14 @@ import PlaylistCard from '../components/PlaylistCard'; // Importe o PlaylistCard
 import { fetchAllMusic } from '../services/musicService';
 import ReactPlayer from 'react-player';
 import axios from 'axios';
+import NavBar from "../components/NavBar";
 
 function Home() {
     const [musicas, setMusicas] = useState([]);
     const [playlists, setPlaylists] = useState([]);
     const [feedback, setFeedback] = useState(null);
-    const [selectedMusicIndex, setSelectedMusicIndex] = useState(null); // Índice da música selecionada
+    const [selectedMusic, setSelectedMusic] = useState(null); // Detalhes da música selecionada
     const [isPlaying, setIsPlaying] = useState(false); // Estado para controlar play/pause
-    const navigate = useNavigate();
 
     // Chamada para buscar músicas da API
     useEffect(() => {
@@ -53,11 +51,6 @@ function Home() {
         loadPlaylists();
     }, []);
 
-    const handleLogout = () => {
-        logoutUser();
-        navigate('/login');
-    };
-
     // Função para embaralhar as músicas e selecionar 6 aleatórias
     const getRandomMusicas = (allMusicas, count = 6) => {
         const shuffled = [...allMusicas].sort(() => 0.5 - Math.random());
@@ -71,35 +64,16 @@ function Home() {
     const latestMusicas = musicas.slice(-6).reverse(); // Pega as últimas 6 músicas e inverte a ordem
 
     // Define a música selecionada para tocar
-    const handleSelectMusic = (index) => {
-        setSelectedMusicIndex(index);
+    const handleSelectMusic = (musica) => {
+        setSelectedMusic(musica); // Define diretamente a música selecionada
         setIsPlaying(true); // Toca a música ao selecionar
     };
-
-    // URL da música selecionada
-    const selectedMusicUrl = selectedMusicIndex !== null ? randomMusicas[selectedMusicIndex]?.url : null;
 
     return (
         <div className={styles.container}>
             <div className="flex justify-content-center gap10">
                 <div className={styles.containerPrincipal}>
-                    <nav className="navBarContainer">
-                        <ul className="menuContainer">
-                            <li><a href='/home' className="menuCheck">Tudo</a></li>
-                            <li><a href='/musicas'>Músicas</a></li>
-                            <li><a href='/playlists'>Playlists</a></li>
-                        </ul>
-                        <button onClick={handleLogout} className="logoutButton">
-                            Logout
-                            <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                viewBox="0 0 512 512" 
-                                className="logoutIcon"
-                            >
-                                <path d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z"/>
-                            </svg>
-                        </button>
-                    </nav>
+                    <NavBar />
 
                     {/* Playlists */}
                     <span>
@@ -110,16 +84,15 @@ function Home() {
                         </div>
                     </span>
 
-
                     {/* Músicas Recomendadas */}
                     <span>
                         <h3>Músicas Recomendadas</h3>
                         <ul className={styles.musicList}>
-                            {randomMusicas.map((musica, index) => (
+                            {randomMusicas.map((musica) => (
                                 <MusicCard 
                                     key={musica.id} 
                                     musica={musica} 
-                                    onClick={() => handleSelectMusic(index)} // Define o índice da música selecionada
+                                    onClick={() => handleSelectMusic(musica)} // Define diretamente a música
                                 />
                             ))}
                         </ul>
@@ -132,11 +105,11 @@ function Home() {
                             <a href='/musicas' className={styles.btnMostrarTudo}>Mostrar tudo</a>
                         </div>
                         <ul className={styles.musicList}>
-                            {latestMusicas.map((musica, index) => (
+                            {latestMusicas.map((musica) => (
                                 <MusicCard 
                                     key={musica.id} 
                                     musica={musica} 
-                                    onClick={() => handleSelectMusic(index)} // Define o índice da música selecionada
+                                    onClick={() => handleSelectMusic(musica)} // Define diretamente a música
                                 />
                             ))}
                         </ul>
@@ -145,9 +118,9 @@ function Home() {
             </div>
             {/* Player de Áudio */}
             <div className={styles.playMusica}>
-                {selectedMusicUrl && (
+                {selectedMusic && (
                     <ReactPlayer 
-                        url={selectedMusicUrl} 
+                        url={selectedMusic.url} // Usa a URL da música selecionada
                         playing={isPlaying}
                         controls={true}
                         width="100%"

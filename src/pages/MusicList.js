@@ -3,17 +3,18 @@ import { fetchAllMusic } from '../services/musicService';
 import Feedback from '../components/Feedback';
 import MusicCard from '../components/MusicCard';
 import styles from './MusicList.module.css';
-import { logoutUser } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
+import NavBar from "../components/NavBar";
+import ReactPlayer from 'react-player';
 
 function MusicList() {
     const [musicas, setMusicas] = useState([]);
     const [feedback, setFeedback] = useState(null);
     const [searchQuery, setSearchQuery] = useState(""); // Query de busca
     const [currentPage, setCurrentPage] = useState(0); // Página atual
+    const [selectedMusic, setSelectedMusic] = useState(null); // Música selecionada
+    const [isPlaying, setIsPlaying] = useState(false); // Estado de reprodução
     const itemsPerPage = 10; // Número de músicas por página
-    const navigate = useNavigate();
 
     useEffect(() => {
         async function loadMusicas() {
@@ -29,11 +30,6 @@ function MusicList() {
         loadMusicas();
     }, []);
 
-    const handleLogout = () => {
-        logoutUser();
-        navigate('/login');
-    };
-
     // Função para lidar com a busca
     const handleSearch = (e) => {
         setSearchQuery(e.target.value.toLowerCase());
@@ -46,7 +42,6 @@ function MusicList() {
         const artistMatch = musica.artist?.toLowerCase().includes(searchQuery);
         return nameMatch || artistMatch;
     });
-
 
     // Calcula o índice inicial e final para a página atual
     const startIndex = currentPage * itemsPerPage;
@@ -65,26 +60,16 @@ function MusicList() {
         }
     };
 
+    // Define a música selecionada para tocar
+    const handleSelectMusic = (musica) => {
+        setSelectedMusic(musica); // Define a música selecionada
+        setIsPlaying(true); // Toca a música
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.containerPrincipal}>
-                <nav className="navBarContainer">
-                    <ul className="menuContainer">
-                        <li><a href='/home'>Tudo</a></li>
-                        <li><a href='/musicas' className="menuCheck">Músicas</a></li>
-                        <li><a href='/playlists'>Playlists</a></li>
-                    </ul>
-                    <button onClick={handleLogout} className="logoutButton">
-                        Logout
-                        <svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            viewBox="0 0 512 512" 
-                            className="logoutIcon"
-                        >
-                            <path d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z"/>
-                        </svg>
-                    </button>
-                </nav>
+                <NavBar />
                 {/* Barra de Busca */}
                 <input
                     type="text"
@@ -98,7 +83,7 @@ function MusicList() {
                         <h3>Todas as Músicas</h3>
                         <Link to="/minhas-musicas">
                             <button className={styles.paginationButton}>
-                                Ver Minhas Musicas
+                                Ver Minhas Músicas
                             </button>
                         </Link>
                     </div>
@@ -109,7 +94,11 @@ function MusicList() {
                         <div>
                             <div className={styles.musicGrid}>
                                 {paginatedMusicas.map((musica) => (
-                                    <MusicCard key={musica.id} musica={musica} />
+                                    <MusicCard 
+                                        key={musica.id} 
+                                        musica={musica} 
+                                        onClick={() => handleSelectMusic(musica)} // Define a música clicada
+                                    />
                                 ))}
                             </div>
                             {/* Controles de Paginação */}
@@ -136,6 +125,22 @@ function MusicList() {
                         </div>
                     )}
                 </span>
+            </div>
+
+            {/* Player de Áudio */}
+            <div className={styles.playMusica}>
+                {selectedMusic && (
+                    <ReactPlayer
+                        url={selectedMusic.url} // Usa a URL da música selecionada
+                        playing={isPlaying}
+                        controls={true}
+                        width="100%"
+                        height="50px"
+                        onPause={() => setIsPlaying(false)}
+                        onPlay={() => setIsPlaying(true)}
+                        config={{ youtube: { playerVars: { autoplay: 1, controls: 1 } } }}
+                    />
+                )}
             </div>
         </div>
     );

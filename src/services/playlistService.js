@@ -21,7 +21,7 @@ export function addPlaylist(playlistData) {
     const token = getToken();
     return api.post('/playlist', playlistData, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: token
         }
     });
 }
@@ -30,7 +30,7 @@ export function editPlaylist(playlistId, playlistData) {
     const token = getToken();
     return api.put(`/playlist/${playlistId}`, playlistData, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: token
         }
     });
 }
@@ -39,7 +39,7 @@ export function deletePlaylist(playlistId) {
     const token = getToken();
     return api.delete(`/playlist/${playlistId}`, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: token
         }
     });
 }
@@ -48,7 +48,7 @@ export function addMusicToPlaylist(playlistId, musicId) {
     const token = getToken();
     return api.post(`/playlist/${playlistId}/song`, { musicId }, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: token
         }
     });
 }
@@ -57,7 +57,7 @@ export function removeMusicFromPlaylist(playlistId, musicId) {
     const token = getToken();
     return api.delete(`/playlist/${playlistId}/song/${musicId}`, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: token
         }
     });
 }

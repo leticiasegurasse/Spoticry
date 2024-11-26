@@ -4,6 +4,8 @@ import axios from "axios";
 import ReactPlayer from "react-player";
 import { jwtDecode } from "jwt-decode";
 import styles from "./PlaylistDetails.module.css";
+import NavBar from "../components/NavBar";
+
 
 // Função para extrair o ID do vídeo do YouTube
 function getYouTubeVideoId(url) {
@@ -201,37 +203,28 @@ function PlaylistDetails() {
   return (
     <div className={styles.container}>
       <div className={styles.containerPrincipal}>
-        <nav className="navBarContainer">
-          <ul className="menuContainer">
-            <li>
-              <a href="/home">Tudo</a>
-            </li>
-            <li>
-              <a href="/musicas">Músicas</a>
-            </li>
-            <li>
-              <a href="/playlists">Playlists</a>
-            </li>
-          </ul>
-        </nav>
+        <NavBar />
 
-        <div className="flex align-items-center gap10">
-          <img
-            src={firstSongThumbnail}
-            alt={playlistName}
-            className={styles.playlistImage}
-          />
-          <span>
-            <h1>{playlistName}</h1>
-            <p>{playlistDescription}</p>
-          </span>
-          <button className={styles.deleteButton} onClick={handleRemovePlaylist}>
+        <div className="flex align-items-start justify-content-between">
+          <div className="flex align-items-center gap40">
+            <img
+              src={firstSongThumbnail}
+              alt={playlistName}
+              className={styles.playlistImage}
+            />
+            <span>
+              <h1>{playlistName}</h1>
+              <p>{playlistDescription}</p>
+            </span>
+          </div>
+          {isCreator && (
+          <button className={styles.removeButton} onClick={handleRemovePlaylist}>
             Apagar Playlist
           </button>
+          )}
         </div>
 
         {isCreator && (
-          <div className={styles.actions}>
             <button
               className={styles.addButton}
               onClick={() => {
@@ -242,7 +235,6 @@ function PlaylistDetails() {
               + Adicionar Músicas
             </button>
             
-          </div>
         )}
 
         <table className={styles.playlistTable}>

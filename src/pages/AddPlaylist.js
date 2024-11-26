@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import styles from "./AddPlaylist.module.css";
+import NavBar from "../components/NavBar";
+import { addPlaylist } from "../services/playlistService"; // Importa funções do serviço
+import { fetchAllMusic } from "../services/musicService"; // Importa função para buscar músicas
 
 function AddPlaylist() {
   const [songs, setSongs] = useState([]); // Todas as músicas
@@ -14,14 +16,8 @@ function AddPlaylist() {
     // Busca todas as músicas
     const fetchSongs = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "https://mqjnto3qw2.execute-api.us-east-1.amazonaws.com/default/song",
-          {
-            headers: { Authorization: token },
-          }
-        );
-        setSongs(response.data.songs || []); // Garante que seja um array
+        const allSongs = await fetchAllMusic(); // Usa a função do serviço de músicas
+        setSongs(allSongs.songs || []); // Garante que seja um array
       } catch (error) {
         console.error("Erro ao carregar músicas:", error);
         setFeedback("Erro ao carregar músicas.");
@@ -53,7 +49,6 @@ function AddPlaylist() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId"); // Supondo que o ID do usuário esteja no localStorage
 
     const payload = {
@@ -64,13 +59,7 @@ function AddPlaylist() {
     };
 
     try {
-      await axios.post(
-        "https://mqjnto3qw2.execute-api.us-east-1.amazonaws.com/default/playlist",
-        payload,
-        {
-          headers: { Authorization: token },
-        }
-      );
+      await addPlaylist(payload); // Usa a função do serviço para adicionar a playlist
       setFeedback("Playlist criada com sucesso!");
       setPlaylistName("");
       setPlaylistDescription("");
@@ -83,13 +72,7 @@ function AddPlaylist() {
 
   return (
     <div className={styles.container}>
-        <nav className="navBarContainer">
-            <ul className="menuContainer">
-                <li><a href='/home'>Tudo</a></li>
-                <li><a href='/musicas'>Músicas</a></li>
-                <li><a href='/playlists'>Playlists</a></li>
-            </ul>
-        </nav>
+        <NavBar/>
         <div className={styles.formContainer}>
             <h1>Nova Playlist</h1>
             {feedback && <p className={styles.feedback}>{feedback}</p>}
