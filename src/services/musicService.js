@@ -33,6 +33,21 @@ export async function fetchAllMusic() {
     }
 }
 
+export async function fetchMusicId(songId) {
+    try {
+        const token = getToken();
+        const response = await api.get(`/song/${songId}`, {
+            headers: {
+                Authorization: token,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao buscar músicas:', error);
+        throw new Error('Não foi possível buscar a música.'); // Propaga o erro com mensagem amigável
+    }
+}
+
 
 export async function addMusic(musicData) {
     try {

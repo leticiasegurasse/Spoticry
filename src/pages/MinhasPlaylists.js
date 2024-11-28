@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { fetchAllPlaylistsArray } from "../services/playlistService"; // Importa o serviço
 import { jwtDecode } from "jwt-decode";
 import PlaylistTable from "../components/PlaylistTable";
 import styles from "./MinhasPlaylists.module.css";
 import { Link } from "react-router-dom";
 import NavBar from "../components/NavBar";
-
-
 
 // Função para recuperar o userId do token
 const getUserIdFromToken = (token) => {
@@ -28,31 +26,32 @@ function MinhasPlaylists() {
   const [currentPage, setCurrentPage] = useState(0); // Página atual
   const itemsPerPage = 10; // Máximo de 10 playlists por página
 
-
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userId = getUserIdFromToken(token); // Usa a função para obter o userId
+    const fetchPlaylists = async () => {
+      const token = localStorage.getItem("token");
+      const userId = getUserIdFromToken(token); // Usa a função para obter o userId
 
-    if (!userId) {
-      setFeedback("Erro: Usuário não autenticado.");
-      return;
-    }
+      if (!userId) {
+        setFeedback("Erro: Usuário não autenticado.");
+        return;
+      }
 
-    axios
-      .get(
-        `https://mqjnto3qw2.execute-api.us-east-1.amazonaws.com/default/playlist/user/${userId}/playlists`,
-        {
-          headers: { Authorization: token },
-        }
-      )
-      .then((res) => {
-        setPlaylists(res.data.playlists || []); // Garante que playlists seja um array
-        setFilteredPlaylists(res.data.playlists || []); // Inicializa as playlists filtradas
-      })
-      .catch((err) => {
-        console.error("Erro ao buscar playlists do usuário:", err);
+      try {
+        const allPlaylists = await fetchAllPlaylistsArray(); // Usa o serviço para buscar playlists
+        const userPlaylists = allPlaylists.filter(
+          (playlist) => playlist._userId === userId
+        ); // Filtra playlists do usuário
+
+        console.log(userPlaylists, allPlaylists);
+        setPlaylists(userPlaylists);
+        setFilteredPlaylists(userPlaylists);
+      } catch (error) {
+        console.error("Erro ao buscar playlists do usuário:", error);
         setFeedback("Erro ao carregar suas playlists.");
-      });
+      }
+    };
+
+    fetchPlaylists();
   }, []);
 
   // Função para lidar com a busca
@@ -91,7 +90,7 @@ function MinhasPlaylists() {
   return (
     <div className={styles.container}>
       <div className={styles.containerPrincipal}>
-        <NavBar/>
+        <NavBar />
 
         {/* Barra de busca */}
         <input
@@ -127,36 +126,40 @@ function MinhasPlaylists() {
               </tr>
             </thead>
             <tbody>
-                {paginatedPlaylists.map((playlist, index) => (
-                    <PlaylistTable key={playlist._id} playlist={playlist} index={startIndex + index} />
-                ))}
+              {paginatedPlaylists.map((playlist, index) => (
+                <PlaylistTable
+                  key={playlist._id}
+                  playlist={playlist}
+                  index={startIndex + index}
+                />
+              ))}
             </tbody>
-
           </table>
         </div>
 
         {/* Controles de Paginação */}
         <div className={styles.paginationContainer}>
           <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 0}
-              className={styles.paginationButton}
+            onClick={handlePreviousPage}
+            disabled={currentPage === 0}
+            className={styles.paginationButton}
           >
-              Anterior
+            Anterior
           </button>
           <span className={styles.paginationInfo}>
-              Página {currentPage + 1} de{" "}
-              {Math.ceil(filteredPlaylists.length / itemsPerPage)}
+            Página {currentPage + 1} de{" "}
+            {Math.ceil(filteredPlaylists.length / itemsPerPage)}
           </span>
           <button
-              onClick={handleNextPage}
-              disabled={(currentPage + 1) * itemsPerPage >= filteredPlaylists.length}
-              className={styles.paginationButton}
+            onClick={handleNextPage}
+            disabled={
+              (currentPage + 1) * itemsPerPage >= filteredPlaylists.length
+            }
+            className={styles.paginationButton}
           >
-              Próxima
+            Próxima
           </button>
         </div>
-
       </div>
     </div>
   );
